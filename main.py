@@ -20,7 +20,7 @@ class KartDrawerStatus(enum.Enum):
 
 DEFAULT_NUMBER_KART: Final = 15
 num_karts: int = os.getenv("NUM_KART", DEFAULT_NUMBER_KART)
-drawn_karts: pd.DataFrame = pd.DataFrame(data={"kart_sorteggiati": []})
+drawn_karts: pd.DataFrame = pd.DataFrame({"Piazzole Kart Sorteggiate": []})
 status: bool = bool(KartDrawerStatus.STOP.value)
 generator: Generator = np.random.default_rng()
 
@@ -29,39 +29,33 @@ def init_dataframe() -> pd.DataFrame:
     return pd.DataFrame({"Piazzole Kart Sorteggiate": []})
 
 
-def start(state: State, id: str | None) -> None:
-    print(f"old start status = {state.status}")
+def start(state: State) -> None:
     state.status = bool(KartDrawerStatus.RUNNING.value)
     state.drawn_karts = init_dataframe()
-    print(f"new start status = {state.status}")
 
 
-def reset(state: State, id: str | None) -> None:
+def reset(state: State) -> None:
     global generator
-    print(f"old reset status = {state.status}")
-    state.status = bool(KartDrawerStatus.STOP.value)
-    print(f"new reset status = {state.status}")
     generator = np.random.default_rng()
+
+    state.status = bool(KartDrawerStatus.STOP.value)
     state.drawn_karts = init_dataframe()
 
 
-def toggle_status(state: State, id: str | None, payload: dict[str, str | list]) -> None:
-    global status
+def toggle_status(state: State) -> None:
+    global generator
     state.status = not state.status
 
     # status = KartDrawerStatus.STOP if status == KartDrawerStatus.RUNNING else KartDrawerStatus.RUNNING
     generator = np.random.default_rng()
 
 
-def set_num_karts(state: State, id: str | None, payload: dict[str, str | list]) -> None:
-    print("\n\nnum kart setter")
-    print(f"payload = {payload}")
-
+def set_num_karts(state: State) -> None:
     state.status = bool(KartDrawerStatus.STOP.value)
     state.drawn_karts = init_dataframe()
 
 
-def draw_kart(state: State, id: str | None, payload: dict) -> None:
+def draw_kart(state: State) -> None:
     print(f"state.num_karts: {state.num_karts}. drawn_kart shape: {state.drawn_karts.shape}")
     if state.num_karts == KartDrawerStatus.STOP or state.drawn_karts.shape[0] == state.num_karts:
         state.status = KartDrawerStatus.STOP
@@ -87,7 +81,6 @@ with tgb.Page() as page:
         value="{num_karts}",
         hover_text="Seleziona il numero di piazzole kart da sorteggiare",
         on_change=set_num_karts,
-        # on_action=set_num_karts,
         id="numero_kart_input",
     )
 
@@ -98,7 +91,6 @@ with tgb.Page() as page:
             active="{not status}",
             id="start_button",
             hover_text="Inizia a sorteggiare le piazzole kart",
-            # properties={"status": status},
         )
 
         tgb.button(
