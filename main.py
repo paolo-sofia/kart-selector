@@ -20,6 +20,7 @@ class KartDrawerStatus(enum.Enum):
 
 DEFAULT_NUMBER_KART: Final = 15
 num_karts: int = os.getenv("NUM_KART", DEFAULT_NUMBER_KART)
+drawn_kart: int | None = None
 drawn_karts: pd.DataFrame = pd.DataFrame({"Piazzole Kart Sorteggiate": []})
 status: bool = bool(KartDrawerStatus.STOP.value)
 generator: Generator = np.random.default_rng()
@@ -68,6 +69,8 @@ def draw_kart(state: State) -> None:
                 [state.drawn_karts, pd.DataFrame(data={"Piazzole Kart Sorteggiate": [drawn_kart]})], axis=0
             )
 
+            state.drawn_kart = drawn_kart
+
             if state.drawn_karts.shape[0] == state.num_karts:
                 state.status = bool(KartDrawerStatus.STOP.value)
             return
@@ -108,6 +111,8 @@ with tgb.Page() as page:
             id="reset_button",
             hover_text="Resetta sorteggio",
         )
+
+    tgb.text(value="### Piazzola sorteggiata: {drawn_kart}", mode="md")
 
     tgb.table(data="{drawn_karts}", hover_text="Piazzole Kart gia' sorteggiate")
 
