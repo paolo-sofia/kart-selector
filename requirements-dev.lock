@@ -74,6 +74,7 @@ gitignore-parser==0.1.11
 greenlet==3.0.3
     # via gevent
     # via sqlalchemy
+gunicorn==22.0.0
 h11==0.14.0
     # via wsproto
 hyperlink==21.0.0
@@ -115,6 +116,7 @@ ordered-set==4.1.0
     # via deepdiff
 packaging==24.0
     # via apispec
+    # via gunicorn
     # via marshmallow
 pandas==2.2.0
     # via taipy-core

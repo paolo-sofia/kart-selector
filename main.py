@@ -10,13 +10,13 @@ from dotenv import load_dotenv
 from numpy.random import Generator
 from taipy.gui import Gui, State
 
-load_dotenv()
-
 
 class KartDrawerStatus(enum.Enum):
     STOP: int = 0
     RUNNING: int = 1
 
+
+load_dotenv()
 
 DEFAULT_NUMBER_KART: Final = 15
 num_karts: int = os.getenv("NUM_KART", DEFAULT_NUMBER_KART)
@@ -57,9 +57,11 @@ def set_num_karts(state: State) -> None:
 
 
 def draw_kart(state: State) -> None:
-    print(f"state.num_karts: {state.num_karts}. drawn_kart shape: {state.drawn_karts.shape}")
-    if state.num_karts == KartDrawerStatus.STOP or state.drawn_karts.shape[0] == state.num_karts:
-        state.status = KartDrawerStatus.STOP
+    if state.status == bool(KartDrawerStatus.STOP.value):
+        return
+
+    if state.drawn_karts.shape[0] == state.num_karts:
+        state.status = bool(KartDrawerStatus.STOP.value)
         return
 
     while True:
@@ -76,45 +78,46 @@ def draw_kart(state: State) -> None:
             return
 
 
-with tgb.Page() as page:
-    tgb.text("# Sorteggio Piazzole Kart", mode="md")
+if __name__ == "__main__":
+    with tgb.Page() as page:
+        tgb.text("# Sorteggio Piazzole Kart", mode="md")
 
-    tgb.number(
-        label="numero_kart",
-        value="{num_karts}",
-        hover_text="Seleziona il numero di piazzole kart da sorteggiare",
-        on_change=set_num_karts,
-        id="numero_kart_input",
-    )
-
-    with tgb.layout(columns="1 1 1") as layout:
-        tgb.button(
-            label="start",
-            on_action=start,
-            active="{not status}",
-            id="start_button",
-            hover_text="Inizia a sorteggiare le piazzole kart",
+        tgb.number(
+            label="numero_kart",
+            value="{num_karts}",
+            hover_text="Seleziona il numero di piazzole kart da sorteggiare",
+            on_change=set_num_karts,
+            id="numero_kart_input",
         )
 
-        tgb.button(
-            label="sorteggia",
-            on_action=draw_kart,
-            active="{status}",
-            id="sorteggia_button",
-            hover_text="Sorteggia la prossima piazzola kart",
-        )
+        with tgb.layout(columns="1 1 1") as layout:
+            tgb.button(
+                label="start",
+                on_action=start,
+                active="{not status}",
+                id="start_button",
+                hover_text="Inizia a sorteggiare le piazzole kart",
+            )
 
-        tgb.button(
-            label="reset",
-            on_action=reset,
-            active="{status}",
-            id="reset_button",
-            hover_text="Resetta sorteggio",
-        )
+            tgb.button(
+                label="sorteggia",
+                on_action=draw_kart,
+                active="{status}",
+                id="sorteggia_button",
+                hover_text="Sorteggia la prossima piazzola kart",
+            )
 
-    tgb.text(value="### Piazzola sorteggiata: {drawn_kart}", mode="md")
+            tgb.button(
+                label="reset",
+                on_action=reset,
+                active="{status}",
+                id="reset_button",
+                hover_text="Resetta sorteggio",
+            )
 
-    tgb.table(data="{drawn_karts}", hover_text="Piazzole Kart gia' sorteggiate")
+        tgb.text(value="### Piazzola sorteggiata: {drawn_kart}", mode="md")
 
-gui = Gui(page)
-app = tp.run(gui, title="Sorteggio Piazzole Kart", debug=False, use_reloader=False, run_server=False)
+        tgb.table(data="{drawn_karts}", hover_text="Piazzole Kart gia' sorteggiate")
+
+    gui = Gui(page)
+    app = tp.run(gui, title="Sorteggio Piazzole Kart", debug=False, use_reloader=False, run_server=False)

@@ -16,5 +16,5 @@ RUN python -m pip install -r requirements.txt
 COPY . .
 
 # Start up command
-ENTRYPOINT [ "gunicorn", "-k", "geventwebsocket.gunicorn.workers.GeventWebSocketWorker", "-w", "1", "--bind=0.0.0.0:5000", "--timeout", "1800" ]
+ENTRYPOINT [ "gunicorn", "-k", "geventwebsocket.gunicorn.workers.GeventWebSocketWorker", "-w", "1", "--bind=0.0.0.0:5000", "--timeout", "0" ]
 CMD [ "main:app" ]
