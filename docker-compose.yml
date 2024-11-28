@@ -1,16 +1,20 @@
-version: "3.9"
+networks:
+  network-proxy:
+    name: network-proxy
+    external: true
+
 services:
   taipy:
     container_name: sorteggio-kart
     build:
       context: ./
       dockerfile: Dockerfile
-    env_file:
-      - .env
-  nginx:
-    container_name: nginx
-    image: nginx:1.23
     ports:
-      - "5000:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - "8501:8501"
+ # nginx:
+ #   container_name: nginx
+ #   image: nginx:1.25
+ #   ports:
+ #     - "5000:80"
+ #   volumes:
+ #     - ./nginx.conf:/etc/nginx/nginx.conf

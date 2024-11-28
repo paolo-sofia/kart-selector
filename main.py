@@ -1,6 +1,8 @@
 import enum
 import os
 from typing import Final
+import logging
+from sys import stdout
 
 import numpy as np
 import pandas as pd
@@ -10,6 +12,16 @@ from dotenv import load_dotenv
 from numpy.random import Generator
 from taipy.gui import Gui, State
 
+logger = logging.getLogger('mylogger')
+
+logger.setLevel(logging.DEBUG) # set logger level
+logFormatter = logging.Formatter\
+("%(name)-12s %(asctime)s %(levelname)-8s %(filename)s:%(funcName)s %(message)s")
+consoleHandler = logging.StreamHandler(stdout) #set streamhandler to stdout
+consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
+
+logger.info("Logger setup")
 
 class KartDrawerStatus(enum.Enum):
     STOP: int = 0
@@ -17,6 +29,7 @@ class KartDrawerStatus(enum.Enum):
 
 
 load_dotenv()
+logger.info("loaded dot env")
 
 DEFAULT_NUMBER_KART: Final = 15
 num_karts: int = os.getenv("NUM_KART", DEFAULT_NUMBER_KART)
@@ -25,6 +38,7 @@ drawn_karts: pd.DataFrame = pd.DataFrame({"Piazzole Kart Sorteggiate": []})
 status: bool = bool(KartDrawerStatus.STOP.value)
 generator: Generator = np.random.default_rng()
 
+logger.info("defined variables")
 
 def init_dataframe() -> pd.DataFrame:
     return pd.DataFrame({"Piazzole Kart Sorteggiate": []})
@@ -79,6 +93,7 @@ def draw_kart(state: State) -> None:
 
 
 if __name__ == "__main__":
+    print("main")
     with tgb.Page() as page:
         tgb.text("# Sorteggio Piazzole Kart", mode="md")
 
@@ -120,4 +135,6 @@ if __name__ == "__main__":
         tgb.table(data="{drawn_karts}", hover_text="Piazzole Kart gia' sorteggiate")
 
     gui = Gui(page)
-    app = tp.run(gui, title="Sorteggio Piazzole Kart", debug=False, use_reloader=False, run_server=False)
+    print("gui page created")
+    app = tp.run(gui, title="Sorteggio Piazzole Kart", debug=True, port=5000, use_reloader=False, run_server=False)
+    print("app run")
