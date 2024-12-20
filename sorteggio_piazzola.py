@@ -92,4 +92,4 @@ st.session_state.drawn_karts.index += 1
 # Display the DataFrame of drawn karts
 st.dataframe(st.session_state.drawn_karts, width=700)
 
-#st.run("app.py", "--server.port=8501", "--server.address=0.0.0.0")
+#st.run("sorteggio_piazzola.py", "--server.port=8501", "--server.address=0.0.0.0")
