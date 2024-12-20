@@ -71,7 +71,7 @@ if col2.button("Sorteggia", disabled=st.session_state.status == KartDrawerStatus
         while True:
             drawn_lane: str = random.choice(["Bianca", "Rossa"])
             
-            new_entry = pd.DataFrame({"Corsie Kart Sorteggiate": [corsia]})
+            new_entry = pd.DataFrame({"Corsie Kart Sorteggiate": [drawn_lane]})
             st.session_state.drawn_lanes = pd.concat([st.session_state.drawn_lanes, new_entry], ignore_index=True)
             st.session_state.drawn_lane = drawn_lane
             
