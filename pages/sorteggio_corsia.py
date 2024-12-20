@@ -1,6 +1,7 @@
 import enum
 import os
 import logging
+import random
 from sys import stdout
 
 import numpy as np
@@ -19,7 +20,7 @@ logger.addHandler(consoleHandler)
 
 logger.info("Logger setup")
 
-st.set_page_config(page_title="Sorteggio kart", page_icon="🎲")
+st.title("Sorteggio piazzola")
 
 # Enum for Kart Drawer Status
 class KartDrawerStatus(enum.Enum):
@@ -38,19 +39,19 @@ generator = np.random.default_rng()
 # Initialize session state
 if 'status' not in st.session_state:
     st.session_state.status = KartDrawerStatus.STOP.value
-if 'drawn_karts' not in st.session_state:
-    st.session_state.drawn_karts = pd.DataFrame({"Piazzole Kart Sorteggiate": []})
+if 'drawn_lanes' not in st.session_state:
+    st.session_state.drawn_lanes = pd.DataFrame({"Corsie Kart Sorteggiate": []})
 
 # Helper function to reset the DataFrame
 def init_dataframe():
-    return pd.DataFrame({"Piazzole Kart Sorteggiate": []})
+    return pd.DataFrame({"Corsie Kart Sorteggiate": []})
 
 # Streamlit GUI
-st.title("Sorteggio Piazzole Kart")
+st.title("Sorteggio Corsia Kart")
 
 # Number input for the number of karts
 st.session_state.num_karts = st.number_input(
-    "Seleziona il numero di piazzole kart da sorteggiare:",
+    "Seleziona il numero di corsie kart da sorteggiare:",
     min_value=1, max_value=100,
     value=num_karts, step=1
 )
@@ -61,35 +62,35 @@ col1, col2, col3 = st.columns(3)
 # Start Button
 if col1.button("Start", disabled=st.session_state.status == KartDrawerStatus.RUNNING.value):
     st.session_state.status = KartDrawerStatus.RUNNING.value
-    st.session_state.drawn_karts = init_dataframe()
+    st.session_state.drawn_lanes = init_dataframe()
     logger.info("Start button clicked")
 
 # Draw Kart Button
 if col2.button("Sorteggia", disabled=st.session_state.status == KartDrawerStatus.STOP.value):
-    if len(st.session_state.drawn_karts) < st.session_state.num_karts:
+    if len(st.session_state.drawn_lanes) < st.session_state.num_karts:
         while True:
-            drawn_kart = generator.integers(1, st.session_state.num_karts + 1)
-            if drawn_kart not in st.session_state.drawn_karts["Piazzole Kart Sorteggiate"].values:
-                new_entry = pd.DataFrame({"Piazzole Kart Sorteggiate": [drawn_kart]})
-                st.session_state.drawn_karts = pd.concat([st.session_state.drawn_karts, new_entry], ignore_index=True)
-                st.session_state.drawn_kart = drawn_kart
-                break
-        logger.info(f"Kart {drawn_kart} drawn")
+            drawn_lane: str = random.choice(["Bianca", "Rossa"])
+            
+            new_entry = pd.DataFrame({"Corsie Kart Sorteggiate": [corsia]})
+            st.session_state.drawn_lanes = pd.concat([st.session_state.drawn_lanes, new_entry], ignore_index=True)
+            st.session_state.drawn_lane = drawn_lane
+            
+        logger.info(f"Kart {drawn_lane} drawn")
     else:
         st.session_state.status = KartDrawerStatus.STOP.value
 
 # Reset Button
 if col3.button("Reset"):
     st.session_state.status = KartDrawerStatus.STOP.value
-    st.session_state.drawn_karts = init_dataframe()
+    st.session_state.drawn_lanes = init_dataframe()
     logger.info("Reset button clicked")
 
 # Display drawn kart
-if 'drawn_kart' in st.session_state:
-    st.markdown(f"### Piazzola sorteggiata: {st.session_state.drawn_kart}")
+if 'drawn_lane' in st.session_state:
+    st.markdown(f"### Corsia sorteggiata: {st.session_state.drawn_lane}")
 
-st.session_state.drawn_karts.index += 1
+st.session_state.drawn_lanes.index += 1
 # Display the DataFrame of drawn karts
-st.dataframe(st.session_state.drawn_karts, width=700)
+st.dataframe(st.session_state.drawn_lanes, width=700)
 
 #st.run("app.py", "--server.port=8501", "--server.address=0.0.0.0")

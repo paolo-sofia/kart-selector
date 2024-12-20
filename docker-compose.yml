@@ -11,6 +11,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8501:8501"
+    restart: always
  # nginx:
  #   container_name: nginx
  #   image: nginx:1.25
