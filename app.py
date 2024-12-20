@@ -46,7 +46,7 @@ def init_dataframe():
     return pd.DataFrame({"Piazzole Kart Sorteggiate": []})
 
 # Streamlit GUI
-#st.title("Sorteggio Piazzole Kart")
+st.title("Sorteggio Piazzole Kart")
 
 # Number input for the number of karts
 st.session_state.num_karts = st.number_input(

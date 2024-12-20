@@ -20,8 +20,6 @@ logger.addHandler(consoleHandler)
 
 logger.info("Logger setup")
 
-st.title("Sorteggio piazzola")
-
 # Enum for Kart Drawer Status
 class KartDrawerStatus(enum.Enum):
     STOP = 0
@@ -68,12 +66,11 @@ if col1.button("Start", disabled=st.session_state.status == KartDrawerStatus.RUN
 # Draw Kart Button
 if col2.button("Sorteggia", disabled=st.session_state.status == KartDrawerStatus.STOP.value):
     if len(st.session_state.drawn_lanes) < st.session_state.num_karts:
-        while True:
-            drawn_lane: str = random.choice(["Bianca", "Rossa"])
-            
-            new_entry = pd.DataFrame({"Corsie Kart Sorteggiate": [drawn_lane]})
-            st.session_state.drawn_lanes = pd.concat([st.session_state.drawn_lanes, new_entry], ignore_index=True)
-            st.session_state.drawn_lane = drawn_lane
+        drawn_lane: str = random.choice(["Bianca", "Rossa"])
+
+        new_entry = pd.DataFrame({"Corsie Kart Sorteggiate": [drawn_lane]})
+        st.session_state.drawn_lanes = pd.concat([st.session_state.drawn_lanes, new_entry], ignore_index=True)
+        st.session_state.drawn_lane = drawn_lane
             
         logger.info(f"Kart {drawn_lane} drawn")
     else:
