@@ -56,18 +56,19 @@ st.session_state.num_karts = st.number_input(
     value=num_karts, step=1
 )
 
-if st.session_state.num_karts % 2 == 0:
-    st.session_state.lanes_count: dict[str, int] = {
-        "Bianca": st.session_state.num_karts // 2,
-        "Rossa": st.session_state.num_karts // 2
-    }
-else:
-    st.session_state.lanes_count: dict[str, int] = {
-        "Bianca": st.session_state.num_karts // 2,
-        "Rossa": st.session_state.num_karts // 2 + 1
-    }
+if "lanes_count" not in st.session_state:
+    if st.session_state.num_karts % 2 == 0:
+        st.session_state.lanes_count: dict[str, int] = {
+            "Bianca": st.session_state.num_karts // 2,
+            "Rossa": st.session_state.num_karts // 2
+        }
+    else:
+        st.session_state.lanes_count: dict[str, int] = {
+            "Bianca": st.session_state.num_karts // 2,
+            "Rossa": st.session_state.num_karts // 2 + 1
+        }
 
-logger.info(f"lanes count: {st.session_state.lanes_count}")
+    logger.info(f"initialize lanes count: {st.session_state.lanes_count}")
 
 # Buttons layout
 col1, col2, col3 = st.columns(3)
