@@ -67,6 +67,8 @@ else:
         "Rossa": st.session_state.num_karts // 2 + 1
     }
 
+logger.info(f"lanes count: {st.session_state.lanes_count}")
+
 # Buttons layout
 col1, col2, col3 = st.columns(3)
 
