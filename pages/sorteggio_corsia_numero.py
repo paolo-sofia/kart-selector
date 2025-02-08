@@ -80,14 +80,17 @@ if col1.button("Start", disabled=st.session_state.status == KartDrawerStatus.RUN
 
 # Draw Kart Button
 if col2.button("Sorteggia", disabled=st.session_state.status == KartDrawerStatus.STOP.value):
+    logging.info(f"drawn karts: {len(st.session_state.drawn_karts_lanes)}. Num karts: {st.session_state.num_karts}")
     if len(st.session_state.drawn_karts_lanes) < st.session_state.num_karts:
         while True:
             drawn_kart = generator.integers(1, st.session_state.num_karts + 1)
             if drawn_kart not in st.session_state.drawn_karts_lanes["Piazzole Kart Sorteggiate"].values:
                 while True:
                     drawn_lane: str = random.choice(["Bianca", "Rossa"])
+                    logging.info(f"Drawn lane: {drawn_lane}. Num of karts per {drawn_lane} lane left: {t.session_state.lanes_count.get(drawn_lane, 0)}")
                     if st.session_state.lanes_count.get(drawn_lane, 0) > 0:
                         st.session_state.lanes_count[drawn_lane] -= 1
+                        logging.info("lane successfully drawn")
                         break
             
                 new_entry = pd.DataFrame({"Corsie Kart Sorteggiate": [drawn_lane], "Piazzole Kart Sorteggiate": [drawn_kart]})
