@@ -84,7 +84,7 @@ if col2.button("Sorteggia", disabled=st.session_state.status == KartDrawerStatus
             if drawn_kart not in st.session_state.drawn_karts_lanes["Piazzole Kart Sorteggiate"].values:
                 while True:
                     drawn_lane: str = random.choice(["Bianca", "Rossa"])
-                    if st.session_state.lanes_count.get("drawn_lane", 0) > 0:
+                    if st.session_state.lanes_count.get(drawn_lane, 0) > 0:
                         st.session_state.lanes_count[drawn_lane] -= 1
                         break
             
@@ -106,7 +106,7 @@ if col3.button("Reset"):
 if 'drawn_kart_lane' in st.session_state:
     st.markdown(f"### Piazzola sorteggiata: {st.session_state.drawn_kart_lane[0]}. Corsia sorteggiata: {st.session_state.drawn_kart_lane[1]}")
 
-st.session_state.drawn_lanes.index += 1
+st.session_state.drawn_karts_lanes.index += 1
 # Display the DataFrame of drawn karts
 st.dataframe(st.session_state.drawn_karts_lanes, width=700)
 
