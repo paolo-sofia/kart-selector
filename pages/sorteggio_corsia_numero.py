@@ -102,6 +102,9 @@ if col2.button("Sorteggia", disabled=st.session_state.status == KartDrawerStatus
                 new_entry = pd.DataFrame({"Corsie Kart Sorteggiate": [drawn_lane], "Piazzole Kart Sorteggiate": [drawn_kart]})
                 st.session_state.drawn_karts_lanes = pd.concat([st.session_state.drawn_karts_lanes, new_entry], ignore_index=True)
                 st.session_state.drawn_kart_lane = (drawn_kart, drawn_lane)
+                
+                if len(st.session_state.drawn_karts_lanes) == st.session_state.num_karts:
+                    st.session_state.status = KartDrawerStatus.STOP.value
                 break
         logger.info(f"Kart {drawn_kart} - Lane {drawn_lane} drawn.")
     else:
