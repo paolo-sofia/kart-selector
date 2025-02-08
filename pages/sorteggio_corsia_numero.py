@@ -44,7 +44,7 @@ if 'drawn_karts_lanes' not in st.session_state:
 
 # Helper function to reset the DataFrame
 def init_dataframe():
-    return pd.DataFrame({"Corsie Kart Sorteggiate": []})
+    return pd.DataFrame({"Corsie Kart Sorteggiate": [], "Piazzole Kart Sorteggiate": []})
 
 # Streamlit GUI
 st.title("Sorteggio Numero e Corsia Kart")
@@ -88,7 +88,7 @@ if col2.button("Sorteggia", disabled=st.session_state.status == KartDrawerStatus
                         st.session_state.lanes_count[drawn_lane] -= 1
                         break
             
-                new_entry = pd.DataFrame({"Piazzole Kart Sorteggiate": [drawn_kart], "Corsie Kart Sorteggiate": [drawn_lane]})
+                new_entry = pd.DataFrame({"Corsie Kart Sorteggiate": [drawn_lane], "Piazzole Kart Sorteggiate": [drawn_kart]})
                 st.session_state.drawn_karts_lanes = pd.concat([st.session_state.drawn_karts_lanes, new_entry], ignore_index=True)
                 st.session_state.drawn_kart_lane = (drawn_kart, drawn_lane)
                 break
