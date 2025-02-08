@@ -20,6 +20,8 @@ logger.addHandler(consoleHandler)
 
 logger.info("Logger setup")
 
+st.set_page_config(page_title="Sorteggio kart e corsia", page_icon="🎲")
+
 # Enum for Kart Drawer Status
 class KartDrawerStatus(enum.Enum):
     STOP = 0
