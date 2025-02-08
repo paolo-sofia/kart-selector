@@ -87,7 +87,7 @@ if col2.button("Sorteggia", disabled=st.session_state.status == KartDrawerStatus
             if drawn_kart not in st.session_state.drawn_karts_lanes["Piazzole Kart Sorteggiate"].values:
                 while True:
                     drawn_lane: str = random.choice(["Bianca", "Rossa"])
-                    logging.info(f"Drawn lane: {drawn_lane}. Num of karts per {drawn_lane} lane left: {t.session_state.lanes_count.get(drawn_lane, 0)}")
+                    logging.info(f"Drawn lane: {drawn_lane}. Num of karts per {drawn_lane} lane left: {st.session_state.lanes_count.get(drawn_lane, 0)}")
                     if st.session_state.lanes_count.get(drawn_lane, 0) > 0:
                         st.session_state.lanes_count[drawn_lane] -= 1
                         logging.info("lane successfully drawn")
