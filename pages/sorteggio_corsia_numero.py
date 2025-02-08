@@ -41,6 +41,10 @@ if 'status' not in st.session_state:
     st.session_state.status = KartDrawerStatus.STOP.value
 if 'drawn_karts_lanes' not in st.session_state:
     st.session_state.drawn_karts_lanes = pd.DataFrame({"Corsie Kart Sorteggiate": [], "Piazzole Kart Sorteggiate": []})
+if "num_karts" in st.session_state:
+    old_num_karts: int = st.session_state.num_karts
+else:
+    old_num_karts = None
 
 # Helper function to reset the DataFrame
 def init_dataframe():
@@ -49,6 +53,7 @@ def init_dataframe():
 # Streamlit GUI
 st.title("Sorteggio Numero e Corsia Kart")
 
+
 # Number input for the number of karts
 st.session_state.num_karts = st.number_input(
     "Seleziona il numero di kart da sorteggiare:",
@@ -56,7 +61,7 @@ st.session_state.num_karts = st.number_input(
     value=num_karts, step=1
 )
 
-if "lanes_count" not in st.session_state:
+if "lanes_count" not in st.session_state or old_num_karts != st.session_state.num_karts:
     if st.session_state.num_karts % 2 == 0:
         st.session_state.lanes_count: dict[str, int] = {
             "Bianca": st.session_state.num_karts // 2,
