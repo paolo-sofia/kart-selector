@@ -103,7 +103,7 @@ if col3.button("Reset"):
     logger.info("Reset button clicked")
 
 # Display drawn kart
-if 'drawn_kart_lane' in st.session_state and :
+if 'drawn_kart_lane' in st.session_state:
     st.markdown(f"### Piazzola sorteggiata: {st.session_state.drawn_kart_lane[0]}. Corsia sorteggiata: {st.session_state.drawn_kart_lane[1]}")
 
 st.session_state.drawn_lanes.index += 1
