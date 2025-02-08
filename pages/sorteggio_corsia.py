@@ -11,7 +11,7 @@ from numpy.random import Generator
 from dotenv import load_dotenv
 
 # Logging setup
-logger = logging.getLogger('mylogger')
+logger = logging.getLogger('sorteggio corsia')
 logger.setLevel(logging.DEBUG)
 logFormatter = logging.Formatter("%(name)-12s %(asctime)s %(levelname)-8s %(message)s")
 consoleHandler = logging.StreamHandler(stdout)
@@ -19,6 +19,8 @@ consoleHandler.setFormatter(logFormatter)
 logger.addHandler(consoleHandler)
 
 logger.info("Logger setup")
+
+st.set_page_config(page_title="Sorteggio corsia", page_icon="🎲")
 
 # Enum for Kart Drawer Status
 class KartDrawerStatus(enum.Enum):
@@ -89,5 +91,3 @@ if 'drawn_lane' in st.session_state:
 st.session_state.drawn_lanes.index += 1
 # Display the DataFrame of drawn karts
 st.dataframe(st.session_state.drawn_lanes, width=700)
-
-#st.run("sorteggio_piazzola.py", "--server.port=8501", "--server.address=0.0.0.0")

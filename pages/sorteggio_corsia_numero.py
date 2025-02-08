@@ -11,7 +11,7 @@ from numpy.random import Generator
 from dotenv import load_dotenv
 
 # Logging setup
-logger = logging.getLogger('mylogger')
+logger = logging.getLogger('sorteggio corsia e piazzola')
 logger.setLevel(logging.DEBUG)
 logFormatter = logging.Formatter("%(name)-12s %(asctime)s %(levelname)-8s %(message)s")
 consoleHandler = logging.StreamHandler(stdout)
@@ -39,7 +39,7 @@ generator = np.random.default_rng()
 # Initialize session state
 if 'status' not in st.session_state:
     st.session_state.status = KartDrawerStatus.STOP.value
-if 'drawn_lanes' not in st.session_state:
+if 'drawn_karts_lanes' not in st.session_state:
     st.session_state.drawn_karts_lanes = pd.DataFrame({"Corsie Kart Sorteggiate": [], "Piazzole Kart Sorteggiate": []})
 
 # Helper function to reset the DataFrame
@@ -73,7 +73,7 @@ col1, col2, col3 = st.columns(3)
 # Start Button
 if col1.button("Start", disabled=st.session_state.status == KartDrawerStatus.RUNNING.value):
     st.session_state.status = KartDrawerStatus.RUNNING.value
-    st.session_state.drawn_lanes = init_dataframe()
+    st.session_state.drawn_karts_lanes = init_dataframe()
     logger.info("Start button clicked")
 
 # Draw Kart Button
@@ -103,8 +103,8 @@ if col3.button("Reset"):
     logger.info("Reset button clicked")
 
 # Display drawn kart
-if 'drawn_lane' in st.session_state:
-    st.markdown(f"### Corsia sorteggiata: {st.session_state.drawn_lane}. Piazzola sorteggiata: {st.session_state.drawn_kart}")
+if 'drawn_kart_lane' in st.session_state and :
+    st.markdown(f"### Piazzola sorteggiata: {st.session_state.drawn_kart_lane[0]}. Corsia sorteggiata: {st.session_state.drawn_kart_lane[1]}")
 
 st.session_state.drawn_lanes.index += 1
 # Display the DataFrame of drawn karts

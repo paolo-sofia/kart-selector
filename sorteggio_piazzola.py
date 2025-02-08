@@ -10,7 +10,7 @@ from numpy.random import Generator
 from dotenv import load_dotenv
 
 # Logging setup
-logger = logging.getLogger('mylogger')
+logger = logging.getLogger('sorteggio piazzola')
 logger.setLevel(logging.DEBUG)
 logFormatter = logging.Formatter("%(name)-12s %(asctime)s %(levelname)-8s %(message)s")
 consoleHandler = logging.StreamHandler(stdout)
