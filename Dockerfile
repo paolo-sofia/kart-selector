@@ -1,13 +1,5 @@
-# Your Python version
 FROM arm64v8/python:3.12-slim-bookworm AS taipy
 
-# Web port of the application
-
-#RUN groupadd -r taipy && useradd -r -m -g taipy taipy
-#USER taipy
-
-#WORKDIR /home/taipy
-#ENV PATH="${PATH}:/home/taipy/.local/bin"
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
@@ -28,9 +20,3 @@ HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
 
 ENTRYPOINT ["streamlit", "run", "sorteggio_piazzola.py", "--server.port=8501", "--server.address=0.0.0.0"]
-
-# Start up command
-#ENTRYPOINT [ "gunicorn", "-k", "geventwebsocket.gunicorn.workers.GeventWebSocketWorker", "-w", "1", "--bind=0.0.0.0:5000", "--timeout", "0" ]
-#CMD [ "main:app" ]
-#ENTRYPOINT [ "python", "main.py", "-P", "5000", "-H", "0.0.0.0", "--no-reloader" ]
-#CMD python main.py -P 5000 -H 0.0.0.0 --debug
