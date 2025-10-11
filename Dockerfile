@@ -1,5 +1,5 @@
 # Your Python version
-FROM python:3.12-slim as taipy
+FROM arm64v8/python:3.12-slim-bookworm AS taipy
 
 # Web port of the application
 
@@ -11,6 +11,7 @@ FROM python:3.12-slim as taipy
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
+    software-properties-common \
     git \
     && rm -rf /var/lib/apt/lists/*
 
