@@ -53,6 +53,15 @@ def sorteggio(
 
 
 def define_gui() -> tuple[bool | None, list[str] | None, str | None, int | None]:
+    st.set_page_config(page_title="Sorteggio sessione", page_icon="🎲")
+    st.title("Sorteggio Sessione")
+    st.header("Istruzioni")
+    st.text("""Inserire la tipologia di evento, poi inserire i nomi dei piloti, il numero di kart extra e poi clicca su sorteggia.
+Il programma effettua il sorteggio considerando i risultati del sorteggio della sessione precedente.
+Ad esempio, se il Pilota 1 in Qualifica ha sorteggiato il kart 5, per il sorteggio della gara il kart 5 viene escluso dal sorteggio del kart per il pilota 1, e viene assegnato ad un altro pilota.
+
+Il numero di extra kart è il numero di kart extra che si vogliono sorteggiare. Ad esempio se la gara è composta da 10 piloti ma si hanno a disposizione 12 kart, inserendo 2 come kart extra, il programma potrà sorteggiare anche i kart 11 e 12.
+    """)
     form = st.form("sorteggio")
 
     tipo_evento: str | None = form.selectbox(
@@ -71,7 +80,7 @@ def define_gui() -> tuple[bool | None, list[str] | None, str | None, int | None]
 
     extra_kart: int | None = form.number_input(
         min_value=0,
-        max_value=10,
+        max_value=20,
         step=1,
         key="extra_kart",
         label="Seleziona il numero di kart extra che possono essere sorteggiati",

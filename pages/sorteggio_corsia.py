@@ -1,9 +1,9 @@
 import logging
 import random
-from copy import deepcopy
 from sys import stdout
 
 import streamlit as st
+from src.common import init_corsie
 
 # Logging setup
 logger = logging.getLogger("sorteggio corsia")
@@ -20,12 +20,16 @@ DEFAULT_NUMBER_KART = 15
 
 
 def define_gui_and_return_form() -> int | None:
-    st.set_page_config(page_title="Sorteggio corsia", page_icon="🎲")
-    st.title("Sorteggio Corsia Kart")
+    st.set_page_config(page_title="Sorteggio Piazzola e Corsia", page_icon="🎲")
+    st.title("Sorteggio Corsia")
+    st.header("Istruzioni")
+    st.write("""Questo programma effettua il sorteggio della corsia per ogni kart. Inserisci il numero di kart da sorteggiare e ad ogni kart verrà sorteggiata una corsia
+""")
+
     form = st.form("form")
 
-    num_corsie: int | None = form.number_input(
-        "Seleziona il numero di corsie kart da sorteggiare:",
+    num_kart: int | None = form.number_input(
+        "Seleziona il numero di kart da sorteggiare:",
         min_value=1,
         max_value=100,
         value=DEFAULT_NUMBER_KART,
@@ -34,12 +38,13 @@ def define_gui_and_return_form() -> int | None:
 
     submit: bool = form.form_submit_button("Sorteggia")
 
-    return num_corsie if submit else None
+    return num_kart if submit else None
 
 
-def sorteggio(corsie: list[str]) -> dict[int, str]:
-    corsie_da_sorteggiare: list[str] = deepcopy(corsie)
-    kart_da_sorteggiare: list[int] = list(range(1, len(corsie) + 1))
+def sorteggio(num_corsie: int) -> dict[int, str]:
+    corsie_da_sorteggiare: list[str] = init_corsie(num_corsie)
+    kart_da_sorteggiare: list[int] = list(range(1, len(corsie_da_sorteggiare) + 1))
+    random.shuffle(kart_da_sorteggiare)
 
     sorteggio: dict[int, str] = {}
 
@@ -56,17 +61,12 @@ def main() -> None:
     if not num_corsie_da_sorteggiare:
         return
 
-    corsie: list[str] = ["Rossa"] * (num_corsie_da_sorteggiare // 2) + ["Bianca"] * (
-        num_corsie_da_sorteggiare // 2
-    )
+    corsie_sorteggiate: dict[str, int] = sorteggio(num_corsie_da_sorteggiare)
 
-    if num_corsie_da_sorteggiare % 2 != 0:
-        corsie.append(random.choice(["Rossa", "Bianca"]))
-
-    corsie_sorteggiate: dict[str, int] = sorteggio(corsie)
+    corsie_sorteggiate = dict(sorted(corsie_sorteggiate.items()))
 
     data: dict[str, list[str, int]] = {
-        "kart": list(corsie_sorteggiate.keys()),
+        "pilota": list(corsie_sorteggiate.keys()),
         "corsia": list(corsie_sorteggiate.values()),
     }
 

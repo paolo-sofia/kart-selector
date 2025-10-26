@@ -47,8 +47,9 @@ def main() -> None:
         piloti=list(range(1, num_kart_da_sorteggiare + 1))
     )
 
+    risultato_sorteggio = dict(sorted(risultato_sorteggio.items()))
     data: dict[str, list[int]] = {
-        "kart": list(risultato_sorteggio.keys()),
+        "pilota": list(risultato_sorteggio.keys()),
         "piazzola": list(risultato_sorteggio.values()),
     }
 

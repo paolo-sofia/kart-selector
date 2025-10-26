@@ -34,3 +34,12 @@ def sorteggio(
         kart_sorteggiati.append(kart)
 
     return nuovo_sorteggio
+
+
+def init_corsie(num_kart: int) -> list[str]:
+    corsie: list[str] = ["Rossa"] * (num_kart // 2) + ["Bianca"] * (num_kart // 2)
+
+    if num_kart % 2 != 0:
+        corsie.append(random.choice(["Rossa", "Bianca"]))
+
+    return corsie
