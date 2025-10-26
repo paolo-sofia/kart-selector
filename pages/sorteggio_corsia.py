@@ -1,17 +1,12 @@
-import enum
-import os
 import logging
 import random
 from sys import stdout
 
-import numpy as np
-import pandas as pd
 import streamlit as st
-from numpy.random import Generator
-from dotenv import load_dotenv
+from src.common import init_corsie
 
 # Logging setup
-logger = logging.getLogger('sorteggio corsia')
+logger = logging.getLogger("sorteggio corsia")
 logger.setLevel(logging.DEBUG)
 logFormatter = logging.Formatter("%(name)-12s %(asctime)s %(levelname)-8s %(message)s")
 consoleHandler = logging.StreamHandler(stdout)
@@ -20,74 +15,62 @@ logger.addHandler(consoleHandler)
 
 logger.info("Logger setup")
 
-st.set_page_config(page_title="Sorteggio corsia", page_icon="🎲")
 
-# Enum for Kart Drawer Status
-class KartDrawerStatus(enum.Enum):
-    STOP = 0
-    RUNNING = 1
-
-# Load environment variables
-load_dotenv()
-logger.info("Loaded .env")
-
-# Default values
 DEFAULT_NUMBER_KART = 15
-num_karts = int(os.getenv("NUM_KART", DEFAULT_NUMBER_KART))
-generator = np.random.default_rng()
 
-# Initialize session state
-if 'status' not in st.session_state:
-    st.session_state.status = KartDrawerStatus.STOP.value
-if 'drawn_lanes' not in st.session_state:
-    st.session_state.drawn_lanes = pd.DataFrame({"Corsie Kart Sorteggiate": []})
 
-# Helper function to reset the DataFrame
-def init_dataframe():
-    return pd.DataFrame({"Corsie Kart Sorteggiate": []})
+def define_gui_and_return_form() -> int | None:
+    st.set_page_config(page_title="Sorteggio Piazzola e Corsia", page_icon="🎲")
+    st.title("Sorteggio Corsia")
+    st.header("Istruzioni")
+    st.write("""Questo programma effettua il sorteggio della corsia per ogni kart. Inserisci il numero di kart da sorteggiare e ad ogni kart verrà sorteggiata una corsia
+""")
 
-# Streamlit GUI
-st.title("Sorteggio Corsia Kart")
+    form = st.form("form")
 
-# Number input for the number of karts
-st.session_state.num_karts = st.number_input(
-    "Seleziona il numero di corsie kart da sorteggiare:",
-    min_value=1, max_value=100,
-    value=num_karts, step=1
-)
+    num_kart: int | None = form.number_input(
+        "Seleziona il numero di kart da sorteggiare:",
+        min_value=1,
+        max_value=100,
+        value=DEFAULT_NUMBER_KART,
+        step=1,
+    )
 
-# Buttons layout
-col1, col2, col3 = st.columns(3)
+    submit: bool = form.form_submit_button("Sorteggia")
 
-# Start Button
-if col1.button("Start", disabled=st.session_state.status == KartDrawerStatus.RUNNING.value):
-    st.session_state.status = KartDrawerStatus.RUNNING.value
-    st.session_state.drawn_lanes = init_dataframe()
-    logger.info("Start button clicked")
+    return num_kart if submit else None
 
-# Draw Kart Button
-if col2.button("Sorteggia", disabled=st.session_state.status == KartDrawerStatus.STOP.value):
-    if len(st.session_state.drawn_lanes) < st.session_state.num_karts:
-        drawn_lane: str = random.choice(["Bianca", "Rossa"])
 
-        new_entry = pd.DataFrame({"Corsie Kart Sorteggiate": [drawn_lane]})
-        st.session_state.drawn_lanes = pd.concat([st.session_state.drawn_lanes, new_entry], ignore_index=True)
-        st.session_state.drawn_lane = drawn_lane
-            
-        logger.info(f"Kart {drawn_lane} drawn")
-    else:
-        st.session_state.status = KartDrawerStatus.STOP.value
+def sorteggio(num_corsie: int) -> dict[int, str]:
+    corsie_da_sorteggiare: list[str] = init_corsie(num_corsie)
+    kart_da_sorteggiare: list[int] = list(range(1, len(corsie_da_sorteggiare) + 1))
+    random.shuffle(kart_da_sorteggiare)
 
-# Reset Button
-if col3.button("Reset"):
-    st.session_state.status = KartDrawerStatus.STOP.value
-    st.session_state.drawn_lanes = init_dataframe()
-    logger.info("Reset button clicked")
+    sorteggio: dict[int, str] = {}
 
-# Display drawn kart
-if 'drawn_lane' in st.session_state:
-    st.markdown(f"### Corsia sorteggiata: {st.session_state.drawn_lane}")
+    for kart in kart_da_sorteggiare:
+        index: int = random.randint(a=0, b=len(corsie_da_sorteggiare) - 1)
+        sorteggio[kart] = corsie_da_sorteggiare.pop(index)
 
-st.session_state.drawn_lanes.index += 1
-# Display the DataFrame of drawn karts
-st.dataframe(st.session_state.drawn_lanes, width=700)
+    return sorteggio
+
+
+def main() -> None:
+    num_corsie_da_sorteggiare: int | None = define_gui_and_return_form()
+
+    if not num_corsie_da_sorteggiare:
+        return
+
+    corsie_sorteggiate: dict[str, int] = sorteggio(num_corsie_da_sorteggiare)
+
+    corsie_sorteggiate = dict(sorted(corsie_sorteggiate.items()))
+
+    data: dict[str, list[str, int]] = {
+        "pilota": list(corsie_sorteggiate.keys()),
+        "corsia": list(corsie_sorteggiate.values()),
+    }
+
+    st.dataframe(data, hide_index=True)
+
+
+main()

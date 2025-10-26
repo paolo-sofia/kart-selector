@@ -1,9 +1,8 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.13-slim-trixie
 
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
-    software-properties-common \
     git \
     && rm -rf /var/lib/apt/lists/*
 
@@ -19,4 +18,4 @@ EXPOSE 8501
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
 
-ENTRYPOINT ["streamlit", "run", "sorteggio_piazzola.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "sorteggio_sessione.py", "--server.port=8501", "--server.address=0.0.0.0"]
