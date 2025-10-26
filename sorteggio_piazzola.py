@@ -43,11 +43,11 @@ def main() -> None:
     if not num_kart_da_sorteggiare:
         return
 
-    risultato_sorteggio: dict[str, int] = sorteggio(
+    risultato_sorteggio: dict[int, int] = sorteggio(
         piloti=list(range(1, num_kart_da_sorteggiare + 1))
     )
 
-    data: dict = {
+    data: dict[str, list[int]] = {
         "kart": list(risultato_sorteggio.keys()),
         "piazzola": list(risultato_sorteggio.values()),
     }
