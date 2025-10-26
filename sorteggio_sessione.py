@@ -107,9 +107,12 @@ def main() -> None:
         )
         sorteggio_sessione_precedente = deepcopy(sorteggio_sessione)
 
-        # lunghezza_nome_max: int = max([len(x) for x in piloti])
-        for pilota, kart in dict(sorted(sorteggio_sessione.items())).items():
-            st.write(f"Pilota: **{pilota}** - Kart: **{kart}**")
+        sorteggio_sessione = dict(sorted(sorteggio_sessione.items()))
+        data = {
+            "Pilota": sorteggio_sessione.keys(),
+            "Kart": sorteggio_sessione.values(),
+        }
+        st.dataframe(data, hide_index=True)
 
 
 main()
