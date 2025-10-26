@@ -1,14 +1,14 @@
 networks:
-  network-proxy:
-    name: network-proxy
-    external: true
+    network-proxy:
+        name: network-proxy
+        external: true
 
 services:
-  taipy:
-    container_name: sorteggio-kart
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    ports:
-      - "8501:8501"
-    restart: always
+    sorteggio-kart:
+        container_name: sorteggio-kart
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        ports:
+            - "8501:8501"
+        restart: always

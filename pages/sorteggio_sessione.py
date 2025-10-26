@@ -3,6 +3,7 @@ import random
 from copy import deepcopy
 
 TIPO_EVENTO_MAP: dict[str, int] = {
+    "GARA": 1,
     "Q1-G1": 2,
     "Q1-G1-G2": 3,
     "Q1-Q2-G1": 3,
