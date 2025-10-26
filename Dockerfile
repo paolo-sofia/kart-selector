@@ -1,15 +1,10 @@
-FROM python:3.13-slim-trixie
+FROM python:3.13-alpine
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
+RUN apk update && apk add py3-pyarrow && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --break-system-packages -r requirements.txt
 
 WORKDIR /app
 COPY . /app
