@@ -1,6 +1,8 @@
-import streamlit as st
 import random
+import re
 from copy import deepcopy
+
+import streamlit as st
 
 TIPO_EVENTO_MAP: dict[str, int] = {
     "GARA": 1,
@@ -18,6 +20,24 @@ def formatted_text(to_print: str, max_value: int, bold: bool = True) -> str:
         return f"**{to_print}**{to_add * ' '}"
     else:
         return f"{to_print}{to_add * ' '}"
+
+
+def parse_regex(piloti_regex: str) -> list[int]:
+    regex = r"\d+\-\d+"
+    piloti: list[int] = []
+
+    split_regex: list = piloti_regex.split(",")
+    print(f"split_regex: {split_regex}")
+    for split in split_regex:
+        result: re.Match | None = re.match(regex, split)
+        print(split, result)
+        if not result:
+            return None
+
+        start, end = result.group().split("-")
+        piloti.extend(list(range(int(start), int(end) + 1)))
+
+    return piloti
 
 
 def sorteggio(
@@ -72,11 +92,16 @@ Il numero di extra kart è il numero di kart extra che si vogliono sorteggiare. 
     )
 
     piloti: str | None = form.text_area(
-        label="Inserisci i nomi dei piloti. I piloti devono essere separati da una nuova riga",
+        label="Inserisci i piloti come intervalli numerici. Se vuoi inserire più intervalli, usa la virgola per separare gli intervalli. (es 1-4,6-8,10-12 genera i piloti 1,2,3,4,6,7,8,10,11,12) ",
         key="pilota",
         value=None,
     )
-    piloti: list[str] | None = piloti.split("\n") if piloti else None
+    # piloti: list[str] | None = piloti.split("\n") if piloti else None
+    piloti: list[str] | None = parse_regex(piloti) if piloti else None
+    if not piloti:
+        st.error(
+            "Formato non valido! Assicurati che tutti gli intervalli siano nel formato 'numero-numero' e separati solo da virgole, senza spazi o trattini consecutivi (es. 1-4,6-8)."
+        )
 
     extra_kart: int | None = form.number_input(
         min_value=0,
