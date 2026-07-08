@@ -103,11 +103,16 @@ Il numero di extra kart è il numero di kart extra che si vogliono sorteggiare. 
 
     piloti: list[str] = []
     for pilota_row in piloti_list:
+        if not pilota_row:
+            continue
+
         parsed_row = parse_regex(pilota_row)
         if parsed_row:
             piloti.extend(parsed_row)
         else:
             piloti.append(pilota_row)
+
+    piloti = [x for x in piloti if x]
 
     extra_kart: int | None = form.number_input(
         min_value=0,
